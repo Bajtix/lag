@@ -10,15 +10,10 @@ public partial class LevelManager : Singleton<LevelManager> {
     [SerializeField] private LevelCameraController m_cameraController;
     [SerializeField] private Material m_allPlatforms, m_vidmoPlatforms, m_sprinterPlatforms;
 
-
-
-    private Dictionary<int, TimeEntity.TimeEntityData>[] m_runs;
+    private Dictionary<int, TimeEntity.TimeEntityData>[] m_runs, m_sprinterDelayRuns;
     private Vector3 m_levelStartPos;
     private Quaternion m_levelStartRot;
     private TimeEntity m_controllerTimeEntity;
-
-
-
 
 
     public LevelStage currentStageType = LevelStage.None;
@@ -124,6 +119,12 @@ public partial class LevelManager : Singleton<LevelManager> {
         StartCoroutine(CSprinterFinish());
     }
 
+    public void VidmoFinish() {
+        Debug.Log("Vidmo finished!");
+        TimeManager.Instance.Pause();
+        StartCoroutine(CVidmoFinish());
+    }
+
     private IEnumerator CLevelIntro() {
         yield return null;
         TimeManager.Instance.Pause();
@@ -180,6 +181,16 @@ public partial class LevelManager : Singleton<LevelManager> {
         m_cameraController.LevelCamera();
 
         UIManager.Instance.Announce($"Sprinter reached goal in {TimeManager.Instance.time:0.000}s", 5, 0.6f);
+        Announcer.Play("ann_sprintergoal");
+        yield return new WaitForSeconds(1);
+        yield return CLevelControl();
+    }
+
+    private IEnumerator CVidmoFinish() {
+        m_cameraController.LevelToPlayer();
+        m_cameraController.LevelCamera();
+
+        UIManager.Instance.Announce($"Vidmo {currentStageId} finished the run", 5, 0.6f);
         Announcer.Play("ann_sprintergoal");
         yield return new WaitForSeconds(1);
         yield return CLevelControl();
