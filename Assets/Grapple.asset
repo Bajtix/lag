@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dbe345e2c0a4490cab758a31c380e3e, type: 3}
+  m_Name: Grapple
+  m_EditorClassIdentifier: 
+  subtitleName: Grapple
+  minDistance: 4
+  maxDistance: 120
+  volumeRange: {x: 0.8, y: 1}
+  volumeMultiplier: 1
+  pitchRange: {x: 0.9, y: 1.1}
+  delayRandomness: 0.01
+  clips:
+  - {fileID: 8300000, guid: 2a8f130fe437fa560b164380bb9863c4, type: 3}
+  - {fileID: 8300000, guid: 77c9db33d4ca69d2ea77206844d418e7, type: 3}
