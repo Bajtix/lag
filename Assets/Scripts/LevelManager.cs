@@ -28,6 +28,7 @@ public partial class LevelManager : Singleton<LevelManager> {
         ghosts = new GameObject[vidmoRuns + 1];
         m_controllerTimeEntity = PlayerController.Instance.GetComponent<TimeEntity>();
         m_runs = new Dictionary<int, TimeEntity.TimeEntityData>[vidmoRuns + 1];
+        m_sprinterDelayRuns = new Dictionary<int, TimeEntity.TimeEntityData>[vidmoRuns];
 
         m_levelStartPos = m_controllerTimeEntity.transform.position;
         m_levelStartRot = m_controllerTimeEntity.transform.rotation;
@@ -63,7 +64,12 @@ public partial class LevelManager : Singleton<LevelManager> {
         var vidmo = i != 0;
         var ghost = Instantiate(vidmo ? m_vidmoPrefab : m_sprinterPrefab, m_levelStartPos, m_levelStartRot);
         var te = ghost.GetComponent<TimeEntity>();
-        te.SetData(m_runs[i]);
+
+        if (i == 0 && currentStageId > 1) {
+            Debug.Log($"Setting data from previous vidmo (run {currentStageId - 1})"); // override player runs with data from vidmo interrupts
+            te.SetData(m_sprinterDelayRuns[currentStageId - 2]);
+        } else te.SetData(m_runs[i]);
+
         te.isRecording = false;
 
         if (ghosts[i] != null) {
@@ -102,12 +108,19 @@ public partial class LevelManager : Singleton<LevelManager> {
         if (!TimeManager.Instance.Paused) {
             if (Input.GetKeyDown(KeyCode.R)) {
                 RestartLevel(true);
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return)) {
+                VidmoFinish();
+                return;
             }
 
             if (PlayerController.Instance.transform.position.y < -20f) {
                 RestartLevel(false);
                 UIManager.Instance.Announce("You fell down!", 0.8f, 0.09f);
                 Announcer.PlayRandom("death");
+                return;
             }
 
         }
@@ -177,27 +190,37 @@ public partial class LevelManager : Singleton<LevelManager> {
     }
 
     private IEnumerator CSprinterFinish() {
+        BroadcastAll("FinishRun");
         m_cameraController.LevelToPlayer();
         m_cameraController.LevelCamera();
 
-        UIManager.Instance.Announce($"Sprinter reached goal in {TimeManager.Instance.time:0.000}s", 5, 0.6f);
+        yield return m_cameraController.CFlyBack(-1f, 1f, 0f);
+
+        UIManager.Instance.Announce($"Sprinter reached the goal in {TimeManager.Instance.time:0.000}s", 5, 0.6f);
         Announcer.Play("ann_sprintergoal");
         yield return new WaitForSeconds(1);
         yield return CLevelControl();
     }
 
     private IEnumerator CVidmoFinish() {
+        BroadcastAll("FinishRun");
         m_cameraController.LevelToPlayer();
         m_cameraController.LevelCamera();
 
         UIManager.Instance.Announce($"Vidmo {currentStageId} finished the run", 5, 0.6f);
-        Announcer.Play("ann_sprintergoal");
+
+        //Announcer.Play("ann_sprintergoal");
         yield return new WaitForSeconds(1);
         yield return CLevelControl();
     }
 
     private IEnumerator CLevelControl() {
         m_runs[currentStageId] = m_controllerTimeEntity.GetData();
+        if (currentStageId != 0) {
+            m_sprinterDelayRuns[currentStageId - 1] = replaySprinter.GetComponent<TimeEntity>().GetData();
+            Debug.Log($"Getting data from sprinter ghost. Got {m_sprinterDelayRuns[currentStageId - 1].Count} from vidmo (run {currentStageId})");
+        }
+
 
         yield return null;
         UIManager.Instance.SetLevelControl(true);
@@ -213,6 +236,7 @@ public partial class LevelManager : Singleton<LevelManager> {
                 yield return new WaitForSeconds(0.5f);
 
                 yield return CStartNewStage(currentStageId + 1);
+                yield break;
             }
             yield return null;
         }

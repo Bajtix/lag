@@ -83,12 +83,10 @@ public class PlayerController : Singleton<PlayerController> {
             if (isGrounded) {
                 playerBody.AddForce(Vector3.up * m_jumpForce, ForceMode.VelocityChange);
                 sfx.Jump();
-
             } else {
                 //wall jumping
             }
             m_jumpDelay = 0.3f;
-
         }
 
         isSliding = Input.GetKey(KeyCode.LeftShift);

@@ -57,7 +57,7 @@ public class DelayArtifact : MonoBehaviour {
 
         if (other.gameObject.CompareTag("SprinterGhost") && LevelManager.Instance.currentStageType == LevelStage.Vidmo) {
             var player = LevelManager.Instance.replaySprinter.GetComponent<TimeEntity>();
-            player.DelaySeconds((int)(TimeManager.Instance.tick * player.playbackSpeed), delay * player.playbackSpeed);
+            player.DelaySeconds((int)(TimeManager.Instance.tick), delay * player.playbackSpeed);
             m_reachedPlayer = true;
         }
     }

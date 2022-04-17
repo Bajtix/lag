@@ -37,7 +37,7 @@ public class TimeEntity : MonoBehaviour {
             Record(TimeManager.Instance.tick);
             SetEnabled(m_recordingOnlyComponents, true);
         } else {
-            Play((int)(playbackSpeed * TimeManager.Instance.tick));
+            Play(TimeManager.Instance.tick);
             SetEnabled(m_recordingOnlyComponents, false);
         }
     }
@@ -82,7 +82,7 @@ public class TimeEntity : MonoBehaviour {
     }
 
     private void Update() {
-        var t = (int)(playbackSpeed * TimeManager.Instance.tick);
+        var t = TimeManager.Instance.tick;
         if (!isRecording) {
             if (m_data.ContainsKey(t)) {
                 transform.position = Vector3.Lerp(transform.position, m_data[t].position, Time.deltaTime * 8);

@@ -59,7 +59,7 @@ public class Grappler : MonoBehaviour {
         m_joint.spring = m_spring;
         m_joint.damper = m_damp;
         m_joint.maxDistance = v * 0.8f;
-        m_joint.minDistance = v * 0.2f; // based on code by Dani
+        m_joint.minDistance = v * 0.1f; // based on code by Dani
 
         PlayerController.Instance.sfx.Grapple();
 
