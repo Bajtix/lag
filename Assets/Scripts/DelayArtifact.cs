@@ -45,7 +45,10 @@ public class DelayArtifact : MonoBehaviour {
         m_reachedPlayer = state.reachedPlayer;
 
         GetComponent<Rigidbody>().isKinematic = true;
-        GetComponent<Renderer>().enabled = !m_reachedPlayer;
+
+        if (!m_reachedPlayer)
+            GetComponentInChildren<Destructible>().Reset();
+
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -58,6 +61,7 @@ public class DelayArtifact : MonoBehaviour {
         if (other.gameObject.CompareTag("SprinterGhost") && LevelManager.Instance.currentStageType == LevelStage.Vidmo) {
             var player = LevelManager.Instance.replaySprinter.GetComponent<TimeEntity>();
             player.DelaySeconds((int)(TimeManager.Instance.tick), delay * player.playbackSpeed);
+            GetComponentInChildren<Destructible>().Destroy();
             m_reachedPlayer = true;
         }
     }

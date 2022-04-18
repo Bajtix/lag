@@ -49,7 +49,18 @@ public class UIManager : Singleton<UIManager> {
     }
 
     private void Update() {
-        lblTimer.text = TimeManager.Instance.Paused ? $"{TimeManager.Instance.time:0.00}s <<" : $"{TimeManager.Instance.time:0.00}s";
+        if (TimeManager.Instance.Paused) {
+            lblTimer.text = "";
+            return;
+        }
+
+        if (LevelManager.Instance.currentStageType == LevelStage.Sprinter) {
+            lblTimer.text = $"{TimeManager.Instance.time:00.00}s<size=50%> / {LevelManager.Instance.sprinterMaxTime:00.00}s</size>";
+        }
+
+        if (LevelManager.Instance.currentStageType == LevelStage.Vidmo) {
+            lblTimer.text = $"{LevelManager.Instance.timeToComplete - TimeManager.Instance.time:00.00}s";
+        }
     }
 
     public void SetFade(bool v) {

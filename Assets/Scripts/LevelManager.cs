@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ElRaccoone.Tweens;
+using System.Linq;
 
 public partial class LevelManager : Singleton<LevelManager> {
 
@@ -16,10 +17,12 @@ public partial class LevelManager : Singleton<LevelManager> {
     private TimeEntity m_controllerTimeEntity;
 
 
-    public LevelStage currentStageType = LevelStage.None;
-    public int currentStageId = 0;
+    [HideInInspector] public LevelStage currentStageType = LevelStage.None;
+    [HideInInspector] public int currentStageId = 0;
     public int vidmoRuns = 1;
-    public GameObject[] ghosts;
+    public float sprinterMaxTime = 30;
+    [HideInInspector] public float timeToComplete = -1;
+    [HideInInspector] public GameObject[] ghosts;
     [HideInInspector] public GameObject replaySprinter => ghosts[0];
 
 
@@ -111,9 +114,19 @@ public partial class LevelManager : Singleton<LevelManager> {
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.Return)) {
+            if (Input.GetKeyDown(KeyCode.F) && currentStageType == LevelStage.Vidmo) {
                 VidmoFinish();
                 return;
+            }
+
+            if (TimeManager.Instance.time > timeToComplete) {
+                if (currentStageType == LevelStage.Vidmo) {
+                    VidmoFinish();
+                } else {
+                    UIManager.Instance.Announce("Out of time!", 0.8f, 0.09f);
+                    Announcer.Play("ann_timeout");
+                    RestartLevel();
+                }
             }
 
             if (PlayerController.Instance.transform.position.y < -20f) {
@@ -136,6 +149,14 @@ public partial class LevelManager : Singleton<LevelManager> {
         Debug.Log("Vidmo finished!");
         TimeManager.Instance.Pause();
         StartCoroutine(CVidmoFinish());
+    }
+
+    public void RecalculateTimeTC() {
+        if (currentStageType == LevelStage.Vidmo)
+            timeToComplete = replaySprinter.GetComponent<TimeEntity>().GetData().Last().Key
+            * Time.fixedDeltaTime / TimeManager.Instance.playbackSpeed;
+        else
+            timeToComplete = sprinterMaxTime;
     }
 
     private IEnumerator CLevelIntro() {
@@ -182,6 +203,7 @@ public partial class LevelManager : Singleton<LevelManager> {
         m_controllerTimeEntity.ResetData();
 
         for (int i = 0; i < currentStageId; i++) SummonGhost(i);
+        RecalculateTimeTC();
 
         yield return UIManager.Instance.CAnimatedCountdown(3);
         TimeManager.Instance.Unpause();
