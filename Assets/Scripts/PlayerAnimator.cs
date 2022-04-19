@@ -20,6 +20,7 @@ public class PlayerAnimator : MonoBehaviour {
     [SerializeField] private Grappler m_grappler;
 
     [SerializeField] private TimeEntity m_timeEntity;
+    [SerializeField] private LineRenderer m_lineRenderer;
 
     public bool playbackOnly = false;
 
@@ -38,12 +39,15 @@ public class PlayerAnimator : MonoBehaviour {
         m_vidmo.SetActive(true);
         m_sprinter.SetActive(false);
         m_animator = m_vidmo.GetComponent<Animator>();
+        if (m_lineRenderer != null) m_lineRenderer.sharedMaterial = m_animator.GetComponentInChildren<Renderer>().sharedMaterial;
     }
 
     public void SetSprinter() {
         m_vidmo.SetActive(false);
         m_sprinter.SetActive(true);
         m_animator = m_sprinter.GetComponent<Animator>();
+        if (m_lineRenderer != null) m_lineRenderer.sharedMaterial = m_animator.GetComponentInChildren<Renderer>().sharedMaterial;
+
     }
 
     private void Update() {

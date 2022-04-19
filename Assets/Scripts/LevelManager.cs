@@ -81,6 +81,12 @@ public partial class LevelManager : Singleton<LevelManager> {
         ghosts[i] = ghost;
     }
 
+    private void DestroyAllGhosts() {
+        foreach (var g in ghosts) {
+            Destroy(g);
+        }
+    }
+
     private void ResetPlayer(bool vidmo) {
 
         TimeManager.Instance.Reset();
@@ -159,6 +165,18 @@ public partial class LevelManager : Singleton<LevelManager> {
             timeToComplete = sprinterMaxTime;
     }
 
+    private void EreaseFutureData(int s) {
+        if (s < 0) return;
+
+        for (int i = s; i < m_runs.Length; i++) {
+            m_runs[i] = null;
+        }
+
+        for (int i = s; i < m_sprinterDelayRuns.Length; i++) {
+            m_sprinterDelayRuns[i] = null;
+        }
+    }
+
     private IEnumerator CLevelIntro() {
         yield return null;
         TimeManager.Instance.Pause();
@@ -202,6 +220,7 @@ public partial class LevelManager : Singleton<LevelManager> {
     private IEnumerator CStartRun() {
         m_controllerTimeEntity.ResetData();
 
+        DestroyAllGhosts();
         for (int i = 0; i < currentStageId; i++) SummonGhost(i);
         RecalculateTimeTC();
 
@@ -246,7 +265,20 @@ public partial class LevelManager : Singleton<LevelManager> {
 
         yield return null;
         UIManager.Instance.SetLevelControl(true);
+        int sel = currentStageId + 1;
         while (true) {
+            if (Input.GetKeyDown(KeyCode.D)) {
+                sel++;
+            }
+            if (Input.GetKeyDown(KeyCode.A)) {
+                sel--;
+            }
+
+            if (sel > currentStageId + 1) sel = currentStageId + 1;
+            if (sel < 0) sel = 0;
+
+            UIManager.Instance.HighlightLevelControl(sel);
+
             if (Input.GetKeyDown(KeyCode.R)) {
                 UIManager.Instance.SetLevelControl(false);
                 yield return new WaitForSeconds(0.5f);
@@ -256,8 +288,7 @@ public partial class LevelManager : Singleton<LevelManager> {
             if (Input.GetKeyDown(KeyCode.F)) {
                 UIManager.Instance.SetLevelControl(false);
                 yield return new WaitForSeconds(0.5f);
-
-                yield return CStartNewStage(currentStageId + 1);
+                yield return CStartNewStage(sel);
                 yield break;
             }
             yield return null;

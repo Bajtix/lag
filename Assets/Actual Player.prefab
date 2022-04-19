@@ -411,7 +411,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5558447757274271889}
   m_Layer: 6
-  m_Name: grab
+  m_Name: Grab Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -571,6 +571,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7033372974510828056}
   - component: {fileID: 7033372974510828057}
+  - component: {fileID: 6739645671726973880}
   m_Layer: 6
   m_Name: Grappler
   m_TagString: Untagged
@@ -694,6 +695,28 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &6739645671726973880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7033372974510828039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5dfd5961c0aeb1f09390900a4c37df1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_spring: 4.5
+  m_damp: 5
+  m_mask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_playerBody: {fileID: 7033372974866454538}
+  m_lineRenderer: {fileID: 7033372974510828057}
+  m_lineStart: {fileID: 7033372974510828056}
+  m_lineEnd: {fileID: 1794898484937224432}
+  grappling: 0
 --- !u!1 &7033372974524689020
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,7 +823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_movementForce: 7
-  m_desiredVelocity: 15
+  m_desiredVelocity: 15.2
   m_jumpForce: 7
   m_airFactor: 0.3
   m_groundFriction: 0.8
@@ -808,7 +831,7 @@ MonoBehaviour:
   m_correctionForce: 10
   m_airCorrectionForce: 2
   playerBody: {fileID: 7033372974866454538}
-  grappler: {fileID: 7033372975209867941}
+  grappler: {fileID: 6739645671726973880}
   sfx: {fileID: 3164685895893925391}
   isGrounded: 0
   isSliding: 0
@@ -840,7 +863,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRecording: 1
   m_recordingOnlyComponents: []
-  playbackSpeed: 1
 --- !u!114 &458317737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -855,8 +877,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_vidmo: {fileID: 4622796173324728952}
   m_sprinter: {fileID: 2409501446458056920}
-  m_grappler: {fileID: 7033372975209867941}
+  m_grappler: {fileID: 6739645671726973880}
   m_timeEntity: {fileID: 7033372974866454530}
+  m_lineRenderer: {fileID: 7033372974510828057}
   playbackOnly: 0
   type: 2
 --- !u!114 &3164685895893925391
@@ -922,7 +945,6 @@ GameObject:
   - component: {fileID: 7033372975209867936}
   - component: {fileID: 7033372975209867939}
   - component: {fileID: 7033372975209867940}
-  - component: {fileID: 7033372975209867941}
   - component: {fileID: 3254828629929570659}
   m_Layer: 6
   m_Name: Main Camera
@@ -1098,17 +1120,17 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.10393477
     - serializedVersion: 3
-      time: 6.7578945
-      value: 5.35687
-      inSlope: 0.4817617
-      outSlope: 0.4817617
+      time: 6.8514366
+      value: 7.656098
+      inSlope: 0.35838473
+      outSlope: 0.35838473
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.07035012
+      inWeight: 0.41775742
       outWeight: 0.085590445
     - serializedVersion: 3
-      time: 17.274258
-      value: 6.66579
+      time: 17.398989
+      value: 9.220041
       inSlope: 0.015202127
       outSlope: 0.015202127
       tangentMode: 0
@@ -1129,28 +1151,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_bobStrength: 0.008
   m_stepSound: {fileID: 11400000, guid: fe9611adf62df742fa327b4d98137bd0, type: 2}
---- !u!114 &7033372975209867941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7033372975209867951}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5dfd5961c0aeb1f09390900a4c37df1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_spring: 4.5
-  m_damp: 5
-  m_mask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_playerBody: {fileID: 7033372974866454538}
-  m_lineRenderer: {fileID: 7033372974510828057}
-  m_lineStart: {fileID: 7033372974510828056}
-  m_lineEnd: {fileID: 1794898484937224432}
-  grappling: 0
 --- !u!114 &3254828629929570659
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,10 +21,10 @@ public class UIManager : Singleton<UIManager> {
 
     public TextMeshProUGUI lblTimer, lblCountdown, lblAnnouncement;
     public Image imBadge;
-    public CanvasGroup cgFader, cgCursor;
+    public CanvasGroup cgFader, cgCursor, cgClippedCamera;
     public RectTransform pnlAnnouncement, pnlLevelControl;
-
     public Image[] imLevelControlOptions;
+    public Image imMenu, imNextLevel;
 
 
     private void Start() {
@@ -138,20 +138,20 @@ public class UIManager : Singleton<UIManager> {
         lblCountdown.TweenCanvasGroupAlpha(0, 0.5f).SetEase(ElRaccoone.Tweens.Core.EaseType.QuadIn).SetOnComplete(() => lblCountdown.gameObject.SetActive(false)).SetDelay(dur / 4f);
     }
 
-    public void SetLevelControl(bool v) {
-
+    public void HighlightLevelControl(int a) {
         for (int i = 0; i < imLevelControlOptions.Length; i++) {
             imLevelControlOptions[i].gameObject.SetActive(true);
+            imLevelControlOptions[i].color = Color.gray;
+            imLevelControlOptions[i].GetComponentInChildren<TextMeshProUGUI>().text = "";
 
             if (i == LevelManager.Instance.currentStageId) {
-                imLevelControlOptions[i].color = Color.gray;
                 imLevelControlOptions[i].GetComponentInChildren<TextMeshProUGUI>().text = "[R] Restart";
-            } else if (i < LevelManager.Instance.currentStageId) {
-                imLevelControlOptions[i].color = Color.white;
-            } else if (i == LevelManager.Instance.currentStageId + 1) {
+            }
+            if (i == a) {
                 imLevelControlOptions[i].color = Color.white;
                 imLevelControlOptions[i].GetComponentInChildren<TextMeshProUGUI>().text = "[F] Play Next";
-            } else if (i > LevelManager.Instance.currentStageId + 1) {
+            }
+            if (i > LevelManager.Instance.currentStageId + 1) {
                 imLevelControlOptions[i].color = Color.black;
             }
 
@@ -160,7 +160,10 @@ public class UIManager : Singleton<UIManager> {
             }
 
         }
+    }
 
+    public void SetLevelControl(bool v) {
+        HighlightLevelControl(LevelManager.Instance.currentStageId + 1);
         pnlLevelControl.TweenCancelAll();
         pnlLevelControl.TweenAnchoredPositionY((v ? 1 : -1) * pnlLevelControl.rect.height / 2, 0.3f);
     }
