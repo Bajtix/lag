@@ -43,9 +43,12 @@ public class Grappler : MonoBehaviour {
     }
 
     public void Grapple() {
-        if (grappling) return;
 
-        if (!Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 20, m_mask)) return;
+        if (grappling) return;
+        //TODO: Camera.main is not always the main camera and calling it twice is not optimal
+        var rt = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        if (!Physics.Raycast(rt, out RaycastHit hit, 20, m_mask)) return;
+
 
         m_joint = m_playerBody.gameObject.AddComponent<SpringJoint>();
         m_joint.autoConfigureConnectedAnchor = false;

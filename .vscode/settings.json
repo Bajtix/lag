@@ -52,5 +52,6 @@
         "temp/":true,
         "Temp/":true
     },
-    "omnisharp.useGlobalMono": "always"
+    "omnisharp.useGlobalMono": "always",
+    "omnisharp.useModernNet": false
 }
